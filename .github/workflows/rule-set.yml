@@ -1,0 +1,93 @@
+name: Convert domain list to .mrs
+
+on:
+  schedule:
+    - cron: "0 11 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y curl wget git jq
+
+      - name: Cache Mihomo .deb package
+        id: cache-mihomo
+        uses: actions/cache@v3
+        with:
+          path: mihomo-linux-amd64-alpha.deb
+          key: mihomo-linux-amd64-alpha.deb-v1
+
+      - name: Download Mihomo if not cached
+        if: steps.cache-mihomo.outputs.cache-hit != 'true'
+        run: |
+          curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases \
+            | grep "browser_download_url.*mihomo-linux-amd64-alpha.*.deb" \
+            | head -n 1 \
+            | cut -d '"' -f 4 \
+            | xargs wget -q -O mihomo-linux-amd64-alpha.deb
+
+      - name: Install Mihomo
+        run: |
+          sudo dpkg -i ./mihomo-linux-amd64-alpha.deb || sudo apt install --fix-missing -y
+
+      - name: Download domain lists
+        run: |
+          declare -A urls=(
+            [hagezi-pro]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/pro-plus/domains.top-n.adblock"
+            [hagezi-tif]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/tif/domains.top-n.adblock"
+            [hagezi-gambling]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/gambling/domains.top-n.adblock"
+            [hagezi-xiaomi]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/native-xiaomi/domains.top-n.adblock"
+            [hagezi-whitelist]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/whitelist-referral/domains.top-n.adblock"
+            [stevenblack]="https://raw.githubusercontent.com/cbuijs/stevenblack/refs/heads/main/domains/adware-malware-fakenews-gambling.list"
+            [oisd-big]="https://raw.githubusercontent.com/cbuijs/oisd/refs/heads/master/big/domains.top-n"
+            [ut1-dating]="https://raw.githubusercontent.com/cbuijs/ut1/refs/heads/master/dating/domains.top-n"
+            [ut1-gambling]="https://raw.githubusercontent.com/cbuijs/ut1/refs/heads/master/gambling/domains.top-n"
+          )
+
+          for key in "${!urls[@]}"; do
+            wget -q -O "${key}.txt" "${urls[$key]}"
+          done
+
+      - name: Convert domain list to .mrs
+        env:
+          NO_SKIP: true
+        run: |
+          set -e
+          mkdir -p rule-set
+          files=(hagezi-pro hagezi-tif hagezi-gambling hagezi-xiaomi hagezi-whitelist stevenblack oisd-big ut1-dating ut1-gambling)
+          for f in "${files[@]}"; do
+            mihomo convert-ruleset domain text "${f}.txt" "${f}.mrs"
+          done
+          mv *.mrs rule-set/
+
+      - name: Cleanup temporary files
+        run: |
+          rm -f *.txt mihomo-linux-amd64-alpha.deb
+
+      - name: Commit and Push converted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add rule-set/*.mrs
+          if ! git diff --cached --quiet; then
+            git commit -m "Update converted .mrs files - $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Get current date
+        id: date
+        run: echo "DATE=$(TZ=Asia/Jakarta date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+        
