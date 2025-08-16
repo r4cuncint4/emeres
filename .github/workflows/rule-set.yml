@@ -44,15 +44,11 @@ jobs:
       - name: Download domain lists
         run: |
           declare -A urls=(
-            [hagezi-pro]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/pro-plus/domains.top-n.adblock"
-            [hagezi-tif]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/tif/domains.top-n.adblock"
-            [hagezi-gambling]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/gambling/domains.top-n.adblock"
-            [hagezi-xiaomi]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/native-xiaomi/domains.top-n.adblock"
-            [hagezi-whitelist]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/whitelist-referral/domains.top-n.adblock"
-            [stevenblack]="https://raw.githubusercontent.com/cbuijs/stevenblack/refs/heads/main/domains/adware-malware-fakenews-gambling.list"
-            [oisd-big]="https://raw.githubusercontent.com/cbuijs/oisd/refs/heads/master/big/domains.top-n"
-            [ut1-dating]="https://raw.githubusercontent.com/cbuijs/ut1/refs/heads/master/dating/domains.top-n"
-            [ut1-gambling]="https://raw.githubusercontent.com/cbuijs/ut1/refs/heads/master/gambling/domains.top-n"
+            [e-ultimate]="https://energized.pro/ultimate/domains.txt"
+            [e-nsfw]="https://energized.pro/nsfw/domains.txt"
+            [e-antipopads]="https://energized.pro/antipopads-re/domains.txt"
+            [e-regional]="https://energized.pro/regional/domains.txt"
+            [h-whitelist]="https://raw.githubusercontent.com/hagezi/dns-blocklists/refs/heads/main/wildcard/whitelist-referral-onlydomains.txt"
           )
 
           for key in "${!urls[@]}"; do
@@ -65,7 +61,7 @@ jobs:
         run: |
           set -e
           mkdir -p rule-set
-          files=(hagezi-pro hagezi-tif hagezi-gambling hagezi-xiaomi hagezi-whitelist stevenblack oisd-big ut1-dating ut1-gambling)
+          files=(e-ultimate e-nsfw e-antipopads e-regional h-whitelist)
           for f in "${files[@]}"; do
             mihomo convert-ruleset domain text "${f}.txt" "${f}.mrs"
           done
@@ -90,4 +86,3 @@ jobs:
       - name: Get current date
         id: date
         run: echo "DATE=$(TZ=Asia/Jakarta date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
-        
