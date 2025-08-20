@@ -44,11 +44,14 @@ jobs:
       - name: Download domain lists
         run: |
           declare -A urls=(
-            [e-ultimate]="https://energized.pro/ultimate/domains.txt"
-            [e-nsfw]="https://energized.pro/nsfw/domains.txt"
-            [e-antipopads]="https://energized.pro/antipopads-re/domains.txt"
-            [e-regional]="https://energized.pro/regional/domains.txt"
-            [h-whitelist]="https://raw.githubusercontent.com/hagezi/dns-blocklists/refs/heads/main/wildcard/whitelist-referral-onlydomains.txt"
+            [hagezi-pro]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/pro-plus/domains"
+            [hagezi-tif]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/tif/domains"
+            [hagezi-gambling]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/gambling/domains"
+            [hagezi-xiaomi]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/native-xiaomi/domains
+            [hagezi-whitelist]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/whitelist-referral/domains"
+            [hagezi-nsfw]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/nsfw/domains"
+            [hagezi-malware]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/anti-malware/domains"
+            [hagezi-fake]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/fake/domains"
           )
 
           for key in "${!urls[@]}"; do
@@ -61,7 +64,7 @@ jobs:
         run: |
           set -e
           mkdir -p rule-set
-          files=(e-ultimate e-nsfw e-antipopads e-regional h-whitelist)
+          files=(hagezi-pro hagezi-tif hagezi-gambling hagezi-xiaomi hagezi-whitelist hagezi-nsfw hagezi-malware hagezi-fake)
           for f in "${files[@]}"; do
             mihomo convert-ruleset domain text "${f}.txt" "${f}.mrs"
           done
