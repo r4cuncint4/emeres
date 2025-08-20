@@ -47,7 +47,7 @@ jobs:
             [hagezi-pro]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/pro-plus/domains"
             [hagezi-tif]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/tif/domains"
             [hagezi-gambling]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/gambling/domains"
-            [hagezi-xiaomi]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/native-xiaomi/domains
+            [hagezi-xiaomi]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/native-xiaomi/domains"
             [hagezi-whitelist]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/whitelist-referral/domains"
             [hagezi-nsfw]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/nsfw/domains"
             [hagezi-malware]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/anti-malware/domains"
