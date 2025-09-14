@@ -44,14 +44,14 @@ jobs:
       - name: Download domain lists
         run: |
           declare -A urls=(
-            [hagezi-pro]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/pro-plus/domains"
-            [hagezi-tif]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/tif/domains"
-            [hagezi-gambling]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/gambling/domains"
-            [hagezi-xiaomi]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/native-xiaomi/domains"
-            [hagezi-whitelist]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/whitelist-referral/domains"
-            [hagezi-nsfw]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/nsfw/domains"
-            [hagezi-malware]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/anti-malware/domains"
-            [hagezi-fake]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/fake/domains"
+            [Core]="https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/pro.txt"
+            [TIF]="https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/tif.txt"
+            [Hoster]="https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/hoster-onlydomains.txt"
+            [Gambling]="https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/gambling-onlydomains.txt"
+            [Microsoft]="https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.winoffice.txt"
+            [Xiaomi]="https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/native.xiaomi.txt"
+            [Judol]="https://raw.githubusercontent.com/BrigsLabs/judol/main/judol_domains.txt"
+            [AnotherBlacklist]="https://raw.githubusercontent.com/malikshi/AnotherBlacklist/refs/heads/release/domains/anotherblacklist.txt"
           )
 
           for key in "${!urls[@]}"; do
@@ -64,7 +64,7 @@ jobs:
         run: |
           set -e
           mkdir -p rule-set
-          files=(hagezi-pro hagezi-tif hagezi-gambling hagezi-xiaomi hagezi-whitelist hagezi-nsfw hagezi-malware hagezi-fake)
+          files=(Core TIF Hoster Gambling Microsoft Xiaomi Judol AnotherBlacklist)
           for f in "${files[@]}"; do
             mihomo convert-ruleset domain text "${f}.txt" "${f}.mrs"
           done
