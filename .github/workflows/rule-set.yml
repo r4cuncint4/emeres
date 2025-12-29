@@ -44,10 +44,11 @@ jobs:
       - name: Download domain lists
         run: |
           declare -A urls=(
-            [Core]="https://energized.pro/blu/domains.txt"
-            [Ads]="https://energized.pro/antipopads-re/domains.txt"
-            [Regional]="https://energized.pro/regional/domains.txt"
-            [Gambling]="https://raw.githubusercontent.com/BrigsLabs/judol/main/judol_domains.txt"
+            [Pro]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/pro/domains"
+            [TIF]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/tif/domains"
+            [Gambling]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/gambling/domains"
+            [Whitelist]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/whitelist-referral/domains"
+            [Judol]="https://raw.githubusercontent.com/BrigsLabs/judol/main/judol_domains.txt"
           )
 
           for key in "${!urls[@]}"; do
@@ -60,7 +61,7 @@ jobs:
         run: |
           set -e
           mkdir -p rule-set
-          files=(Core Ads Regional Gambling)
+          files=(Pro TIF Gambling Whitelist Judol)
           for f in "${files[@]}"; do
             mihomo convert-ruleset domain text "${f}.txt" "${f}.mrs"
           done
