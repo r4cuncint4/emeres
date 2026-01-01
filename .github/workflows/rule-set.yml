@@ -44,7 +44,7 @@ jobs:
       - name: Download domain lists
         run: |
           declare -A urls=(
-            [Pro]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/pro.plus.mini.txt"
+            [Pro]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/pro.mini.txt"
             [TIF]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium.txt"
             [Gambling]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/gambling.medium.txt"
             [BadBlock]="https://badblock.celenity.dev/wildcards-star/badblock_lite.txt"
