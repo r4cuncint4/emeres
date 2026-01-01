@@ -44,11 +44,11 @@ jobs:
       - name: Download domain lists
         run: |
           declare -A urls=(
-            [Pro]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/pro/domains.original"
-            [TIF]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/tif/domains.original"
-            [Gambling]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/gambling/domains.original"
-            [TikTok]="https://raw.githubusercontent.com/cbuijs/hagezi/refs/heads/main/lists/native-tiktok/domains.original"
-            [Judol]="https://raw.githubusercontent.com/BrigsLabs/judol/main/judol_domains.txt"
+            [Pro]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/pro.plus.mini.txt"
+            [TIF]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium.txt"
+            [Gambling]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/gambling.medium.txt"
+            [BadBlock]="https://badblock.celenity.dev/wildcards-star/badblock_lite.txt"
+            [Whitelist]="https://badblock.celenity.dev/wildcards-star/whitelist.txt"
           )
 
           for key in "${!urls[@]}"; do
@@ -61,7 +61,7 @@ jobs:
         run: |
           set -e
           mkdir -p rule-set
-          files=(Pro TIF Gambling TikTok Judol)
+          files=(Pro TIF Gambling BadBlock Whitelist)
           for f in "${files[@]}"; do
             mihomo convert-ruleset domain text "${f}.txt" "${f}.mrs"
           done
