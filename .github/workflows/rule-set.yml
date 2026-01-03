@@ -41,37 +41,29 @@ jobs:
         run: |
           sudo dpkg -i ./mihomo-linux-amd64-alpha.deb || sudo apt install --fix-missing -y
 
-      - name: Download domain lists
+      - name: Download and convert domain lists
         run: |
-          declare -A urls=(
-            [Pro]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/pro.mini.txt"
-            [TIF]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium.txt"
-            [Gambling]="https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/gambling.medium.txt"
-            [BadBlock]="https://badblock.celenity.dev/wildcards-star/badblock_lite.txt"
-            [Whitelist]="https://badblock.celenity.dev/wildcards-star/whitelist.txt"
+          URLS=(
+            "https://raw.githubusercontent.com/cbuijs/hagezi/main/lists/pro-mini/domains"
+            "https://raw.githubusercontent.com/cbuijs/hagezi/main/lists/tif-medium/domains"
+            "https://raw.githubusercontent.com/cbuijs/hagezi/main/lists/gambling-medium/domains"
           )
 
-          for key in "${!urls[@]}"; do
-            wget -q -O "${key}.txt" "${urls[$key]}"
+          for URL in "${URLS[@]}"; do
+            curl -s $URL -o domains.txt
+
+            OUTPUT_FILE="domains_wildcard_$(basename $URL).txt"
+
+            while IFS= read -r line; do
+              echo "+.$line" >> "$OUTPUT_FILE"
+            done < "domains.txt"
           done
 
-      - name: Convert domain format
+      - name: Convert wildcard domain files to .mrs
         run: |
-          for file in *.txt; do
-            sed -i 's/\*\./+./g' "$file"
+          for file in domains_wildcard_*.txt; do
+            mihomo -c "rule-set/${file%.txt}.mrs" -d "$file"
           done
-
-      - name: Convert domain list to .mrs
-        env:
-          NO_SKIP: true
-        run: |
-          set -e
-          mkdir -p rule-set
-          files=(Pro TIF Gambling BadBlock Whitelist)
-          for f in "${files[@]}"; do
-            mihomo convert-ruleset domain text "${f}.txt" "${f}.mrs"
-          done
-          mv *.mrs rule-set/
 
       - name: Cleanup temporary files
         run: |
