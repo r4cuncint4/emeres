@@ -55,6 +55,12 @@ jobs:
             wget -q -O "${key}.txt" "${urls[$key]}"
           done
 
+      - name: Convert domain format
+        run: |
+          for file in *.txt; do
+            sed -i 's/\*\./+./g' "$file"
+          done
+
       - name: Convert domain list to .mrs
         env:
           NO_SKIP: true
